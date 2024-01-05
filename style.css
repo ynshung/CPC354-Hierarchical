@@ -29,8 +29,31 @@ input[type="color"] {
     padding: 32px;
 }
 
-#attr-container {
-    max-width: 256px;
+.slider-label {
+    display: inline-block;
+    opacity: 80%;
+    font-size: 14px;
+    width: 42px;
+    text-align: center;
+}
+
+.attr-container {
+    min-width: 256px;
+}
+
+.w-label {
+    display: inline-block;
+    width: 50px;
+}
+
+.w-label-lg {
+    display: inline-block;
+    width: 108px;
+}
+
+.w-label-xl {
+    display: inline-block;
+    width: 150px;
 }
 
 .fs-7 {

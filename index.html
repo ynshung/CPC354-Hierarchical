@@ -58,7 +58,290 @@
                 </canvas>
             </div>
 
-            <div id="attr-container">
+            <div class="attr-container">
+
+                <!-- Add new attributes here -->
+                <!-- Below is for reference -->
+
+                <span>Body:</span>
+
+                <div>
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
+                            >Z-axis:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="body0"
+                            type="range"
+                            id="body0"
+                            min="0"
+                            max="360"
+                            step="1"
+                            value="230"
+                        />
+                        <span class="slider-label" id="body0Value">230</span>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
+                            >X-axis:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="body1"
+                            type="range"
+                            id="body1"
+                            min="-10"
+                            max="10"
+                            step="0.5"
+                            value="0"
+                        />
+                        <span class="slider-label" id="body1Value">0</span>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
+                            >Y-axis:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="body2"
+                            type="range"
+                            id="body2"
+                            min="-10"
+                            max="10"
+                            step="0.5"
+                            value="0"
+                        />
+                        <span class="slider-label" id="body2Value">0</span>
+                    </div>
+                </div>
+
+                <br/>
+
+                <span>Head:</span>
+
+                <div>
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
+                            >X-axis:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="head0"
+                            type="range"
+                            id="head0"
+                            min="-30"
+                            max="30"
+                            step="1"
+                            value="0"
+                        />
+                        <span class="slider-label" id="head0Value">0</span>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
+                            >Y-axis:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="head1"
+                            type="range"
+                            id="head1"
+                            min="-60"
+                            max="60"
+                            step="1"
+                            value="0"
+                        />
+                        <span class="slider-label" id="head1Value">0</span>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
+                            >Z-axis:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="head2"
+                            type="range"
+                            id="head2"
+                            min="-60"
+                            max="60"
+                            step="1"
+                            value="0"
+                        />
+                        <span class="slider-label" id="head2Value">0</span>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label-lg"
+                            >Nose:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="nose"
+                            type="range"
+                            id="nose"
+                            min="-0.2"
+                            max="0.2"
+                            step="0.01"
+                            value="0"
+                        />
+                        <span class="slider-label" id="noseValue">0</span>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label-lg"
+                            >Left Ear:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="earLeft0"
+                            type="range"
+                            id="earLeft0"
+                            min="0"
+                            max="30"
+                            step="1"
+                            value="0"
+                        />
+                        <span class="slider-label" id="earLeft0Value">0</span>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label-lg"
+                            >Right Ear:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="earRight0"
+                            type="range"
+                            id="earRight0"
+                            min="0"
+                            max="30"
+                            step="1"
+                            value="0"
+                        />
+                        <span class="slider-label" id="earRight0Value">0</span>
+                    </div>
+                </div>
+
+                <br/>
+
+                <span>Legs:</span>
+
+                <div>
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label-xl"
+                            >Front Left:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="legFrontLeft"
+                            type="range"
+                            id="legFrontLeft"
+                            min="-30"
+                            max="30"
+                            step="1"
+                            value="0"
+                        />
+                        <span class="slider-label" id="legFrontLeftValue">0</span>
+                    </div>
+                    
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label-xl"
+                            >Front Right:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="legFrontRight"
+                            type="range"
+                            id="legFrontRight"
+                            min="-30"
+                            max="30"
+                            step="1"
+                            value="0"
+                        />
+                        <span class="slider-label" id="legFrontRightValue">0</span>
+                    </div>
+                    
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label-xl"
+                            >Back Left:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="legBackLeft"
+                            type="range"
+                            id="legBackLeft"
+                            min="-30"
+                            max="30"
+                            step="1"
+                            value="0"
+                        />
+                        <span class="slider-label" id="legBackLeftValue">0</span>
+                    </div>
+                    
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label-xl"
+                            >Back Right:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="legBackRight"
+                            type="range"
+                            id="legBackRight"
+                            min="-30"
+                            max="30"
+                            step="1"
+                            value="0"
+                        />
+                        <span class="slider-label" id="legBackRightValue">0</span>
+                    </div>
+                </div>
+
+                <br />
+
+                <span>Tail:</span>
+
+                <div>
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
+                            >Z-axis:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="tail0"
+                            type="range"
+                            id="tail0"
+                            min="0"
+                            max="180"
+                            step="1"
+                            value="130"
+                        />
+                        <span class="slider-label" id="tail0Value">130</span>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
+                            >X-axis:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="tail1"
+                            type="range"
+                            id="tail1"
+                            min="-60"
+                            max="60"
+                            step="1"
+                            value="0"
+                        />
+                        <span class="slider-label" id="tail1Value">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="attr-container">
 
                 <!-- Add new attributes here -->
                 <!-- Below is for reference -->
@@ -211,7 +494,7 @@
 
                 <div>
                     <div class="d-flex gap-3">
-                        <label class="fs-7 opacity-75 text-nowrap"
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
                             >Face 1:</label
                         >
                         <input
@@ -227,7 +510,7 @@
                     </div>
 
                     <div class="d-flex gap-3">
-                        <label class="fs-7 opacity-75 text-nowrap"
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
                             >Face 2:</label
                         >
                         <input
@@ -243,7 +526,7 @@
                     </div>
 
                     <div class="d-flex gap-3">
-                        <label class="fs-7 opacity-75 text-nowrap"
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
                             >Face 3:</label
                         >
                         <input
@@ -259,7 +542,7 @@
                     </div>
 
                     <div class="d-flex gap-3">
-                        <label class="fs-7 opacity-75 text-nowrap"
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
                             >Face 4:</label
                         >
                         <input

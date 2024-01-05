@@ -42,14 +42,20 @@ var legFrontRightId = 6;
 var legBackLeftId = 7;
 var legBackRightId = 8;
 var tailId = 9;
+var body1Id = 10;
+var body2Id = 11;
+var head1Id = 12;
+var head2Id = 13;
+var tail1Id = 14;
 
 var numNodes = 10;
-var numAngles = 11;
 var angle = 0;
 
-var theta = [0, 0, 0, 0, 0, 0, 180, 0, 180, 0, 0];
+var theta = [
+    230, 0, 0, 0, 0, 0, 0, 0, 0, 130, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+];
 
-var numVertices = 24;
+var numVertices = 36;
 
 var stack = [];
 
@@ -130,8 +136,11 @@ function initNodes(Id) {
 
     switch (Id) {
         case bodyId:
-            m = rotate(-theta[bodyId], 0, 1, 0);
-            // m = mult(m, rotate(theta[bodyId], 1, 0, 0));
+        case body1Id:
+        case body2Id:
+            m = rotate(theta[bodyId], 0, 1, 0);
+            m = mult(m, rotate(theta[body1Id], 1, 0, 0));
+            m = mult(m, rotate(theta[body2Id], 0, 0, 1));
             figure[bodyId] = createNode(m, body, null, [
                 headId,
                 legFrontLeftId,
@@ -141,34 +150,30 @@ function initNodes(Id) {
             break;
 
         case headId:
+        case head1Id:
+        case head2Id:
             m = translate(bodyLength / 2 - 0.5, bodyHeight / 2 - 0.5, 0.0);
-            // m = mult(m, rotate(-theta[bodyId], 0, 0, 1));
-            // m = mult(m, rotate(-theta[bodyId], 0, 1, 0));
-            figure[headId] = createNode(m, head, noseId, earLeftId);
+            m = mult(m, rotate(theta[headId], 1, 0, 0));
+            m = mult(m, rotate(theta[head1Id], 0, 1, 0));
+            m = mult(m, rotate(theta[head2Id], 0, 0, 1));
+            figure[headId] = createNode(m, head, null, [earLeftId, noseId]);
             break;
 
         case earLeftId:
             m = translate(headLength / 2, headLength, headLength / 3);
-            // m = mult(m, rotate(-theta[bodyId], 0, 0, 1));
-            // m = mult(m, rotate(-theta[bodyId], 0, 1, 0));
+            m = mult(m, rotate(theta[earLeftId], 1, 0, 0));
             figure[earLeftId] = createNode(m, earLeft, earRightId, null);
             break;
 
         case earRightId:
             m = translate(headLength / 2, headLength, -headLength / 3);
-            // m = mult(m, rotate(-theta[bodyId], 0, 0, 1));
-            // m = mult(m, rotate(-theta[bodyId], 0, 1, 0));
+            m = mult(m, rotate(-theta[earRightId], 1, 0, 0));
             figure[earRightId] = createNode(m, earRight, null, null);
             break;
 
         case noseId:
-            m = translate(
-                headLength * 2 + noseLength * 2,
-                headLength - noseHeight,
-                0
-            );
-            // m = mult(m, rotate(-theta[bodyId], 0, 0, 1));
-            // m = mult(m, rotate(-theta[bodyId], 0, 1, 0));
+            m = translate(headLength, headLength / 2, 0);
+            m = mult(m, translate(0, theta[noseId], 0));
             figure[noseId] = createNode(m, nose, null, null);
             break;
 
@@ -178,7 +183,7 @@ function initNodes(Id) {
                 -bodyHeight / 2,
                 -bodyWidth / 2 + 0.5
             );
-            // m = mult(m, rotate(-theta[bodyId], 0, 0, 1));
+            m = mult(m, rotate(theta[legFrontLeftId], 0, 0, 1));
             figure[legFrontLeftId] = createNode(
                 m,
                 legFrontLeft,
@@ -193,7 +198,7 @@ function initNodes(Id) {
                 -bodyHeight / 2,
                 bodyWidth / 2 - 0.5
             );
-            // m = mult(m, rotate(theta[bodyId], 0, 0, 1));
+            m = mult(m, rotate(theta[legFrontRightId], 0, 0, 1));
             figure[legFrontRightId] = createNode(m, legFrontRight, null, null);
             break;
 
@@ -203,7 +208,7 @@ function initNodes(Id) {
                 -bodyHeight / 2,
                 -bodyWidth / 2 + 0.5
             );
-            // m = mult(m, rotate(-theta[bodyId], 0, 0, 1));
+            m = mult(m, rotate(theta[legBackLeftId], 0, 0, 1));
             figure[legBackLeftId] = createNode(
                 m,
                 legBackLeft,
@@ -218,18 +223,15 @@ function initNodes(Id) {
                 -bodyHeight / 2,
                 bodyWidth / 2 - 0.5
             );
-            // m = mult(m, rotate(theta[bodyId], 0, 0, 1));
+            m = mult(m, rotate(theta[legBackRightId], 0, 0, 1));
             figure[legBackRightId] = createNode(m, legBackRight, null, null);
             break;
-        
+
         case tailId:
-            m = translate(
-                -bodyLength / 2,
-                bodyHeight / 4,
-                0
-            );
-            // m = mult(m, rotate(theta[bodyId], 0, 0, 1));
-            // m = mult(m, rotate(theta[bodyId], 1, 0, 0));
+        case tail1Id:
+            m = translate(-bodyLength / 2, bodyHeight / 4, 0);
+            m = mult(m, rotate(theta[tailId], 0, 0, 1));
+            m = mult(m, rotate(theta[tail1Id], 1, 0, 0));
             figure[tailId] = createNode(m, tail, null, null);
             break;
     }
@@ -242,7 +244,7 @@ function body() {
         scale4(bodyLength, bodyHeight, bodyWidth)
     );
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    gl.drawArrays(gl.TRIANGLES, 0, 36);
+    gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 }
 
 function head() {
@@ -255,7 +257,7 @@ function head() {
         scale4(headLength, headLength, headLength)
     );
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    gl.drawArrays(gl.TRIANGLES, 0, 36);
+    gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 }
 
 function earLeft() {
@@ -265,7 +267,7 @@ function earLeft() {
         scale4(earLength, earHeight, earWidth)
     );
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    gl.drawArrays(gl.TRIANGLES, 0, 36);
+    gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 }
 
 function earRight() {
@@ -275,7 +277,7 @@ function earRight() {
         scale4(earLength, earHeight, earWidth)
     );
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    gl.drawArrays(gl.TRIANGLES, 0, 36);
+    gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 }
 
 function nose() {
@@ -285,7 +287,7 @@ function nose() {
         scale4(noseLength, noseHeight, noseWidth)
     );
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    gl.drawArrays(gl.TRIANGLES, 0, 36);
+    gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 }
 
 function legFrontLeft() {
@@ -295,7 +297,7 @@ function legFrontLeft() {
         scale4(legLength, legHeight, legLength)
     );
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    gl.drawArrays(gl.TRIANGLES, 0, 36);
+    gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 }
 
 function legFrontRight() {
@@ -305,7 +307,7 @@ function legFrontRight() {
         scale4(legLength, legHeight, legLength)
     );
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    gl.drawArrays(gl.TRIANGLES, 0, 36);
+    gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 }
 
 function legBackLeft() {
@@ -315,7 +317,7 @@ function legBackLeft() {
         scale4(legLength, legHeight, legLength)
     );
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    gl.drawArrays(gl.TRIANGLES, 0, 36);
+    gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 }
 
 function legBackRight() {
@@ -325,7 +327,7 @@ function legBackRight() {
         scale4(legLength, legHeight, legLength)
     );
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    gl.drawArrays(gl.TRIANGLES, 0, 36);
+    gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 }
 
 function tail() {
@@ -335,7 +337,7 @@ function tail() {
         scale4(tailLength, tailHeight, tailLength)
     );
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    gl.drawArrays(gl.TRIANGLES, 0, 36);
+    gl.drawArrays(gl.TRIANGLES, 0, numVertices);
 }
 
 function quad(a, b, c, d) {
@@ -361,6 +363,10 @@ function cube() {
     quad(4, 5, 6, 7);
     quad(5, 4, 0, 1);
 }
+
+const setElementText = (id, text) => {
+    document.getElementById(id).innerHTML = text;
+};
 
 window.onload = function init() {
     canvas = document.getElementById("gl-canvas");
@@ -418,18 +424,127 @@ window.onload = function init() {
     gl.enableVertexAttribArray(vColor);
 
     document
-        .getElementById("slider0")
+        .getElementById("body0")
         .addEventListener("input", function (event) {
             theta[bodyId] = event.target.value;
             initNodes(bodyId);
+            setElementText("body0Value", event.target.value);
         });
 
-    for (i = 0; i < numNodes; i++) initNodes(i);
+    document
+        .getElementById("body1")
+        .addEventListener("input", function (event) {
+            theta[body1Id] = event.target.value;
+            initNodes(body1Id);
+            setElementText("body1Value", event.target.value);
+        });
 
-    setInterval(() => {
-        theta[bodyId] += 0.3;
-        for (i = 0; i < numNodes; i++) initNodes(i);
-    }, 10);
+    document
+        .getElementById("body2")
+        .addEventListener("input", function (event) {
+            theta[body2Id] = event.target.value;
+            initNodes(body2Id);
+            setElementText("body2Value", event.target.value);
+        });
+
+    document
+        .getElementById("head0")
+        .addEventListener("input", function (event) {
+            theta[headId] = event.target.value;
+            initNodes(headId);
+            setElementText("head0Value", event.target.value);
+        });
+
+    document
+        .getElementById("head1")
+        .addEventListener("input", function (event) {
+            theta[head1Id] = event.target.value;
+            initNodes(head1Id);
+            setElementText("head1Value", event.target.value);
+        });
+
+    document
+        .getElementById("head2")
+        .addEventListener("input", function (event) {
+            theta[head2Id] = event.target.value;
+            initNodes(head2Id);
+            setElementText("head2Value", event.target.value);
+        });
+
+    document
+        .getElementById("nose")
+        .addEventListener("input", function (event) {
+            theta[noseId] = event.target.value;
+            initNodes(noseId);
+            setElementText("noseValue", event.target.value);
+        });
+
+    document
+        .getElementById("earLeft0")
+        .addEventListener("input", function (event) {
+            theta[earLeftId] = event.target.value;
+            initNodes(earLeftId);
+            setElementText("earLeft0Value", event.target.value);
+        });
+
+    document
+        .getElementById("earRight0")
+        .addEventListener("input", function (event) {
+            theta[earRightId] = event.target.value;
+            initNodes(earRightId);
+            setElementText("earRight0Value", event.target.value);
+        });
+
+    document
+        .getElementById("legFrontLeft")
+        .addEventListener("input", function (event) {
+            theta[legFrontLeftId] = event.target.value;
+            initNodes(legFrontLeftId);
+            setElementText("legFrontLeftValue", event.target.value);
+        });
+
+    document
+        .getElementById("legFrontRight")
+        .addEventListener("input", function (event) {
+            theta[legFrontRightId] = event.target.value;
+            initNodes(legFrontRightId);
+            setElementText("legFrontRightValue", event.target.value);
+        });
+    
+    document
+        .getElementById("legBackLeft")
+        .addEventListener("input", function (event) {
+            theta[legBackLeftId] = event.target.value;
+            initNodes(legBackLeftId);
+            setElementText("legBackLeftValue", event.target.value);
+        });
+    
+    document
+        .getElementById("legBackRight")
+        .addEventListener("input", function (event) {
+            theta[legBackRightId] = event.target.value;
+            initNodes(legBackRightId);
+            setElementText("legBackRightValue", event.target.value);
+        });
+
+    document
+        .getElementById("tail0")
+        .addEventListener("input", function (event) {
+            theta[tailId] = event.target.value;
+            initNodes(tailId);
+            setElementText("tail0Value", event.target.value);
+        });
+
+    document
+        .getElementById("tail1")
+        .addEventListener("input", function (event) {
+            theta[tail1Id] = event.target.value;
+            initNodes(tail1Id);
+            setElementText("tail1Value", event.target.value);
+        });
+
+
+    for (i = 0; i < numNodes; i++) initNodes(i);
 
     render();
 };
