@@ -75,6 +75,9 @@ var normalsArray = [];
 
 
 var shininess = 50.0; // TODO: Set a good looking default shininess
+var Ka = 1.0;
+var Kd = 1.0;
+var Ks = 1.0;
 
 var lightPosition; // TODO: Set default light position
 
@@ -418,7 +421,7 @@ window.onload = function init() {
 
     instanceMatrix = mat4();
 
-    // TODO: Camera properties
+    // TODO: Camera properties calculation here
     projectionMatrix = ortho(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
     modelViewMatrix = mat4();
 
@@ -588,7 +591,9 @@ window.onload = function init() {
     for (i = 0; i < numNodes; i++) initNodes(i);
 
     // TODO: Add event listeners for light, material properties and viewing/shading options
-    // TODO: might need to run render() if the slider does not affect the model
+    // TODO: might or might not need to run render() if the slider does not affect the model
+
+
 
     render();
 };
@@ -600,7 +605,7 @@ var render = function () {
 
     
     // TODO: Light color, properties, position
-    lightPosition = vec4(2.0, 2.0, 2.0, 0.0); // Default should be set globally
+    lightPosition = vec4(2.0, 2.0, 2.0, 0.0); // Default should be set globally at line ~75
 
 
     // TODO: Calculate the products of ambient, diffuse, specular, currently is set to default values
@@ -621,8 +626,6 @@ var render = function () {
         gl.getUniformLocation(program, "specularProduct"),
         flatten(specularProduct)
     );
-
-    // TODO: Take shininess as input from the user
     gl.uniform1f(gl.getUniformLocation(program, "shininess"), shininess);
 
     // Set light position
@@ -630,6 +633,11 @@ var render = function () {
         gl.getUniformLocation(program, "lightPosition"),
         flatten(lightPosition)
     );
+
+    // Coefficients
+    gl.uniform1f(gl.getUniformLocation(program, "Ka"), Ka);
+    gl.uniform1f(gl.getUniformLocation(program, "Kd"), Kd);
+    gl.uniform1f(gl.getUniformLocation(program, "Ks"), Ks);
 
     traverse(bodyId);
     requestAnimFrame(render);
