@@ -69,6 +69,7 @@ var modelViewLoc;
 
 var pointsArray = [];
 var colorsArray = [];
+var normalsArray = [];
 
 //-------------------------------------------
 
@@ -341,18 +342,35 @@ function tail() {
 }
 
 function quad(a, b, c, d) {
+    var t1 = subtract(vertices[b], vertices[a]);
+    var t2 = subtract(vertices[c], vertices[b]);
+    var normal = cross(t1, t2);
+    var normal = vec3(normal);
+    normal = normalize(normal);
+
     colorsArray.push(vertexColors[a]);
     pointsArray.push(vertices[a]);
+    normalsArray.push(normal);
+
     colorsArray.push(vertexColors[a]);
     pointsArray.push(vertices[b]);
+    normalsArray.push(normal);
+
     colorsArray.push(vertexColors[a]);
     pointsArray.push(vertices[c]);
+    normalsArray.push(normal);
+
     colorsArray.push(vertexColors[a]);
     pointsArray.push(vertices[a]);
+    normalsArray.push(normal);
+
     colorsArray.push(vertexColors[a]);
     pointsArray.push(vertices[c]);
+    normalsArray.push(normal);
+
     colorsArray.push(vertexColors[a]);
     pointsArray.push(vertices[d]);
+    normalsArray.push(normal);
 }
 
 function cube() {
@@ -406,6 +424,18 @@ window.onload = function init() {
     modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
 
     cube();
+
+    var nBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, nBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        flatten(normalsArray),
+        gl.STATIC_DRAW
+    );
+
+    var vNormal = gl.getAttribLocation(program, "vNormal");
+    gl.vertexAttribPointer(vNormal, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(vNormal);
 
     vBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
