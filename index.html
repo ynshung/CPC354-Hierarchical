@@ -11,12 +11,34 @@
         attribute  vec4 vColor;
         varying vec4 fColor;
 
+        uniform vec4 ambientProduct, diffuseProduct, specularProduct;
+        uniform vec4 lightPosition;
+        uniform float shininess;
+        uniform float Ka, Kd, Ks;
+
         uniform mat4 modelViewMatrix;
         uniform mat4 projectionMatrix;
 
         void main() 
         {
-            fColor = vColor;
+            // Adapted from angelChap6/shadedCube.html
+
+            vec3 pos = vec3(modelViewMatrix * vPosition);
+            vec3 L = normalize(lightPosition.xyz - pos);
+            vec3 E = normalize(-pos);
+            vec3 H = normalize(L + E);
+            vec3 N = normalize(vec3(modelViewMatrix * vec4(vNormal, 0.0)));
+
+            vec4 ambient = ambientProduct;
+            vec4 diffuse = max(dot(L, N), 0.0) * diffuseProduct;
+            vec4 specular = pow(max(dot(N, H), 0.0), shininess) * specularProduct;
+
+            if( dot(L, N) < 0.0 ) {
+                specular = vec4(0.0, 0.0, 0.0, 1.0);
+            }
+
+            fColor = ambient + diffuse + specular;
+            // fColor = vColor;
             gl_Position = projectionMatrix * modelViewMatrix * vPosition;
         } 
         </script>
@@ -60,10 +82,6 @@
             </div>
 
             <div class="attr-container">
-
-                <!-- Add new attributes here -->
-                <!-- Below is for reference -->
-
                 <span>Body:</span>
 
                 <div>
@@ -340,11 +358,15 @@
                         <span class="slider-label" id="tail1Value">0</span>
                     </div>
                 </div>
+
+                <!-- TODO: Add new attributes below -->
+
+
             </div>
 
             <div class="attr-container">
 
-                <!-- Add new attributes here -->
+                <!-- TODO: Add new attributes above -->
                 <!-- Below is for reference -->
 
                 <div class="slidecontainer" id="slidecontainer_1">

@@ -71,6 +71,17 @@ var pointsArray = [];
 var colorsArray = [];
 var normalsArray = [];
 
+// TODO: Set default material / light / camera properties values below
+
+
+var shininess = 50.0; // TODO: Set a good looking default shininess
+
+var lightPosition; // TODO: Set default light position
+
+var ambientProduct;
+var diffuseProduct;
+var specularProduct;
+
 //-------------------------------------------
 
 function scale4(a, b, c) {
@@ -407,6 +418,7 @@ window.onload = function init() {
 
     instanceMatrix = mat4();
 
+    // TODO: Camera properties
     projectionMatrix = ortho(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
     modelViewMatrix = mat4();
 
@@ -573,14 +585,52 @@ window.onload = function init() {
             setElementText("tail1Value", event.target.value);
         });
 
-
     for (i = 0; i < numNodes; i++) initNodes(i);
+
+    // TODO: Add event listeners for light, material properties and viewing/shading options
+    // TODO: might need to run render() if the slider does not affect the model
 
     render();
 };
 
 var render = function () {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    // TODO: Material color, properties and coefficient
+
+    
+    // TODO: Light color, properties, position
+    lightPosition = vec4(2.0, 2.0, 2.0, 0.0); // Default should be set globally
+
+
+    // TODO: Calculate the products of ambient, diffuse, specular, currently is set to default values
+    ambientProduct = vec4(0.2, 0.5, 0.5, 1.0);
+    diffuseProduct = vec4(1.0, 1.0, 1.0, 1.0);
+    specularProduct = vec4(0.5, 0.5, 0.5, 1.0);
+
+    // Set material properties
+    gl.uniform4fv(
+        gl.getUniformLocation(program, "ambientProduct"),
+        flatten(ambientProduct)
+    );
+    gl.uniform4fv(
+        gl.getUniformLocation(program, "diffuseProduct"),
+        flatten(diffuseProduct)
+    );
+    gl.uniform4fv(
+        gl.getUniformLocation(program, "specularProduct"),
+        flatten(specularProduct)
+    );
+
+    // TODO: Take shininess as input from the user
+    gl.uniform1f(gl.getUniformLocation(program, "shininess"), shininess);
+
+    // Set light position
+    gl.uniform4fv(
+        gl.getUniformLocation(program, "lightPosition"),
+        flatten(lightPosition)
+    );
+
     traverse(bodyId);
     requestAnimFrame(render);
 };
