@@ -8,6 +8,7 @@ var modelViewMatrix;
 var instanceMatrix;
 
 var modelViewMatrixLoc;
+var projectionMatrixLoc;
 
 var vertices = [
     vec4(-0.5, -0.5, 0.5, 1.0),
@@ -55,6 +56,15 @@ var theta = [
     230, 0, 0, 0, 0, 0, 0, 0, 0, 130, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ];
 
+var thetaCam = 0.0;
+var phi = 0.0;
+var volume = 1.0;
+var near = -0.5;    // Near clipping plane
+var far = 5.0;     // Far clipping plane
+var radius = 20.0;
+var fovy = 45.0;    // Field-of-view in Y direction angle (in degrees)
+var aspect = 1.0;   // Viewport aspect ratio
+
 var numVertices = 36;
 
 var stack = [];
@@ -80,6 +90,10 @@ var Kd = 1.0;
 var Ks = 1.0;
 
 var lightPosition; // TODO: Set default light position
+
+var eye = vec3(1.0, 0.0, 1.5);    //Default camera location & orientation
+var at = vec3(0.0, 0.0, 0.0);
+var up = vec3(0.0, 1.0, 0.0);
 
 var ambientProduct;
 var diffuseProduct;
@@ -422,7 +436,7 @@ window.onload = function init() {
     instanceMatrix = mat4();
 
     // TODO: Camera properties calculation here
-    projectionMatrix = ortho(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
+    projectionMatrix = ortho(-volume, volume, -volume, volume, near, far);
     modelViewMatrix = mat4();
 
     gl.uniformMatrix4fv(
@@ -437,6 +451,7 @@ window.onload = function init() {
     );
 
     modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
+    projectionMatrixLoc = gl.getUniformLocation(program, "projectionMatrix");
 
     cube();
 
@@ -590,6 +605,36 @@ window.onload = function init() {
 
     for (i = 0; i < numNodes; i++) initNodes(i);
 
+    document
+        .getElementById("theta")
+        .addEventListener("input", function (event){
+            thetaCam = event.target.value * Math.PI/180.0;
+        });
+    
+    document
+        .getElementById("phi")
+        .addEventListener("input", function (event){
+            phi = event.target.value * Math.PI/180.0;
+        });
+
+    document
+        .getElementById("near")
+        .addEventListener("input", function (event){
+            near = event.target.value;
+        });
+
+    document
+        .getElementById("far")
+        .addEventListener("input", function (event){
+            far = event.target.value;
+        });
+
+    document
+        .getElementById("fov")
+        .addEventListener("input", function (event){
+            fovy = event.target.value;
+        });
+
     // TODO: Add event listeners for light, material properties and viewing/shading options
     // TODO: might or might not need to run render() if the slider does not affect the model
 
@@ -633,6 +678,15 @@ var render = function () {
         gl.getUniformLocation(program, "lightPosition"),
         flatten(lightPosition)
     );
+
+    // Camera
+    eye = vec3(radius*Math.sin(thetaCam)*Math.cos(phi), 
+                radius*Math.sin(thetaCam)*Math.sin(phi), 
+                radius*Math.cos(thetaCam));
+    modelViewMatrix = lookAt(eye, at, up);
+    projectionMatrix = perspective(fovy, aspect, near, far);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
 
     // Coefficients
     gl.uniform1f(gl.getUniformLocation(program, "Ka"), Ka);
