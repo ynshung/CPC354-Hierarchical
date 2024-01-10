@@ -91,13 +91,15 @@ var Ks = 1.0;
 
 var lightPosition; // TODO: Set default light position
 
-var eye = vec3(1.0, 0.0, 1.5);    //Default camera location & orientation
+var eye = vec3(1.0, 0.0, 0.0);    //Default camera location & orientation
 var at = vec3(0.0, 0.0, 0.0);
 var up = vec3(0.0, 1.0, 0.0);
 
 var ambientProduct;
 var diffuseProduct;
 var specularProduct;
+
+var flatShading = false;    // Default smooth shading
 
 //-------------------------------------------
 
@@ -634,6 +636,18 @@ window.onload = function init() {
         .addEventListener("input", function (event){
             fovy = event.target.value;
         });
+
+    document.getElementById("smooth-flat").onclick = function() {
+        flatShading = !flatShading;
+        if (!flatShading) {
+            // Smooth shading
+            gl.uniform1i(gl.getUniformLocation(program, "flatShading"), flatShading);
+            document.getElementById("smooth-flat").innerHTML = "Flat Shading";
+        } else {
+            gl.uniform1i(gl.getUniformLocation(program, "flatShading"), flatShading);
+            document.getElementById("smooth-flat").innerHTML = "Smooth Shading";
+        }
+    };
 
     // TODO: Add event listeners for light, material properties and viewing/shading options
     // TODO: might or might not need to run render() if the slider does not affect the model
