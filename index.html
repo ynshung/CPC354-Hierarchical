@@ -10,6 +10,7 @@
         attribute  vec3 vNormal;
         attribute  vec4 vColor;
         varying vec4 fColor;
+        varying vec4 vClr;
 
         uniform vec4 ambientProduct, diffuseProduct, specularProduct;
         uniform vec4 lightPosition;
@@ -18,6 +19,7 @@
 
         uniform mat4 modelViewMatrix;
         uniform mat4 projectionMatrix;
+        uniform bool flatShading;
 
         void main() 
         {
@@ -39,6 +41,11 @@
 
             fColor = Ka * ambient + Kd * diffuse + Ks * specular;
             // fColor = vColor;
+            
+            if (flatShading){
+                fColor = vColor;
+                vClr = fColor;
+            }
             gl_Position = projectionMatrix * modelViewMatrix * vPosition;
         } 
         </script>
@@ -48,10 +55,16 @@
         precision mediump float;
 
         varying  vec4 fColor;
+        varying vec4 vClr;
+        uniform bool flatShading;
 
         void main() 
         { 
-            gl_FragColor = fColor;
+            if (flatShading){
+                gl_FragColor = vClr;
+            } else {
+                gl_FragColor = fColor;
+            }
         } 
         </script>
 
@@ -357,6 +370,107 @@
                         />
                         <span class="slider-label" id="tail1Value">0</span>
                     </div>
+                </div>
+
+                <br/>
+
+                <span>Camera Orientation:</span>
+
+                <div>
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
+                            >Theta:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="theta"
+                            type="range"
+                            id="theta"
+                            min="-90"
+                            max="90"
+                            step="5"
+                            value="0"
+                        />
+                        <span class="slider-label" id="thetaValue">90</span>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
+                            >Phi:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="phi"
+                            type="range"
+                            id="phi"
+                            min="-90"
+                            max="90"
+                            step="5"
+                            value="0"
+                        />
+                        <span class="slider-label" id="phiValue">90</span>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
+                            >Near:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="near"
+                            type="range"
+                            id="near"
+                            min="-2.0"
+                            max="5"
+                            step="0.1"
+                            value="-0.5"
+                        />
+                        <span class="slider-label" id="nearValue">5</span>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
+                            >Far:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="far"
+                            type="range"
+                            id="far"
+                            min="-3"
+                            max="5"
+                            step="0.5"
+                            value="5"
+                        />
+                        <span class="slider-label" id="farValue">5</span>
+                    </div>
+                    
+                    <div class="d-flex gap-3">
+                        <label class="fs-7 opacity-75 text-nowrap w-label"
+                            >Field of View:</label
+                        >
+                        <input
+                            class="form-range"
+                            name="fov"
+                            type="range"
+                            id="fov"
+                            min="10"
+                            max="120"
+                            step="5"
+                            value="50"
+                        />
+                        <span class="slider-label" id="fovValue">120</span>
+                    </div>
+                </div>
+
+                <div class="item btn-container text-center mt-3" id="button">
+                    <button
+                        class="btn btn-primary me-1"
+                        id="smooth-flat"
+                        type="button"
+                    >
+                        Smooth Shading
+                    </button>
                 </div>
 
                 <!-- TODO: Add new attributes below -->
