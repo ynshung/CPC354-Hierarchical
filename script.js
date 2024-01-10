@@ -73,6 +73,15 @@ var normalsArray = [];
 
 // TODO: Set default material / light / camera properties values below
 
+var uAmbientMaterial = vec4(50/255, 121/255 , 139/255, 1.0);
+var uDiffuseMaterial = vec4(110/255, 170/255 , 120/255, 1.0);
+var uSpecularMaterial = vec4(255/255, 255/255 , 255/255, 1.0);
+
+//change prettier colour
+var uAmbientLight = vec4(1.0, 1.0, 1.0, 1.0);
+var uDiffuseLight = vec4(1.0, 1.0, 1.0, 1.0);
+var uSpecularLight = vec4(1.0, 1.0, 1.0, 1.0);
+
 
 var shininess = 50.0; // TODO: Set a good looking default shininess
 var Ka = 1.0;
@@ -194,9 +203,7 @@ function initNodes(Id) {
 
         case legFrontLeftId:
             m = translate(
-                bodyLength / 2 - 0.5,
-                -bodyHeight / 2,
-                -bodyWidth / 2 + 0.5
+                bodyLength / 2 - 0.5, -bodyHeight / 2, -bodyWidth / 2 + 0.5
             );
             m = mult(m, rotate(theta[legFrontLeftId], 0, 0, 1));
             figure[legFrontLeftId] = createNode(
@@ -209,8 +216,7 @@ function initNodes(Id) {
 
         case legFrontRightId:
             m = translate(
-                bodyLength / 2 - 0.5,
-                -bodyHeight / 2,
+                bodyLength / 2 - 0.5, -bodyHeight / 2,
                 bodyWidth / 2 - 0.5
             );
             m = mult(m, rotate(theta[legFrontRightId], 0, 0, 1));
@@ -218,11 +224,7 @@ function initNodes(Id) {
             break;
 
         case legBackLeftId:
-            m = translate(
-                -bodyLength / 2 + 0.5,
-                -bodyHeight / 2,
-                -bodyWidth / 2 + 0.5
-            );
+            m = translate(-bodyLength / 2 + 0.5, -bodyHeight / 2, -bodyWidth / 2 + 0.5);
             m = mult(m, rotate(theta[legBackLeftId], 0, 0, 1));
             figure[legBackLeftId] = createNode(
                 m,
@@ -233,9 +235,7 @@ function initNodes(Id) {
             break;
 
         case legBackRightId:
-            m = translate(
-                -bodyLength / 2 + 0.5,
-                -bodyHeight / 2,
+            m = translate(-bodyLength / 2 + 0.5, -bodyHeight / 2,
                 bodyWidth / 2 - 0.5
             );
             m = mult(m, rotate(theta[legBackRightId], 0, 0, 1));
@@ -346,7 +346,7 @@ function legBackRight() {
 }
 
 function tail() {
-    instanceMatrix = mult(modelViewMatrix, translate(0, tailHeight/2, 0));
+    instanceMatrix = mult(modelViewMatrix, translate(0, tailHeight / 2, 0));
     instanceMatrix = mult(
         instanceMatrix,
         scale4(tailLength, tailHeight, tailLength)
@@ -399,6 +399,16 @@ function cube() {
 const setElementText = (id, text) => {
     document.getElementById(id).innerHTML = text;
 };
+
+function hexToVec4(hex, intensity = 1.0) {
+    const r =
+        parseInt(hex.substr(1, 2), 16);
+    const g =
+        parseInt(hex.substr(3, 2), 16);
+    const b =
+        parseInt(hex.substr(5, 2), 16);
+    return vec4(r / 255, g / 255, b / 255, 1.0);
+}
 
 window.onload = function init() {
     canvas = document.getElementById("gl-canvas");
@@ -470,7 +480,7 @@ window.onload = function init() {
 
     document
         .getElementById("body0")
-        .addEventListener("input", function (event) {
+        .addEventListener("input", function(event) {
             theta[bodyId] = event.target.value;
             initNodes(bodyId);
             setElementText("body0Value", event.target.value);
@@ -478,7 +488,7 @@ window.onload = function init() {
 
     document
         .getElementById("body1")
-        .addEventListener("input", function (event) {
+        .addEventListener("input", function(event) {
             theta[body1Id] = event.target.value;
             initNodes(body1Id);
             setElementText("body1Value", event.target.value);
@@ -486,7 +496,7 @@ window.onload = function init() {
 
     document
         .getElementById("body2")
-        .addEventListener("input", function (event) {
+        .addEventListener("input", function(event) {
             theta[body2Id] = event.target.value;
             initNodes(body2Id);
             setElementText("body2Value", event.target.value);
@@ -494,7 +504,7 @@ window.onload = function init() {
 
     document
         .getElementById("head0")
-        .addEventListener("input", function (event) {
+        .addEventListener("input", function(event) {
             theta[headId] = event.target.value;
             initNodes(headId);
             setElementText("head0Value", event.target.value);
@@ -502,7 +512,7 @@ window.onload = function init() {
 
     document
         .getElementById("head1")
-        .addEventListener("input", function (event) {
+        .addEventListener("input", function(event) {
             theta[head1Id] = event.target.value;
             initNodes(head1Id);
             setElementText("head1Value", event.target.value);
@@ -510,7 +520,7 @@ window.onload = function init() {
 
     document
         .getElementById("head2")
-        .addEventListener("input", function (event) {
+        .addEventListener("input", function(event) {
             theta[head2Id] = event.target.value;
             initNodes(head2Id);
             setElementText("head2Value", event.target.value);
@@ -518,7 +528,7 @@ window.onload = function init() {
 
     document
         .getElementById("nose")
-        .addEventListener("input", function (event) {
+        .addEventListener("input", function(event) {
             theta[noseId] = event.target.value;
             initNodes(noseId);
             setElementText("noseValue", event.target.value);
@@ -526,7 +536,7 @@ window.onload = function init() {
 
     document
         .getElementById("earLeft0")
-        .addEventListener("input", function (event) {
+        .addEventListener("input", function(event) {
             theta[earLeftId] = event.target.value;
             initNodes(earLeftId);
             setElementText("earLeft0Value", event.target.value);
@@ -534,7 +544,7 @@ window.onload = function init() {
 
     document
         .getElementById("earRight0")
-        .addEventListener("input", function (event) {
+        .addEventListener("input", function(event) {
             theta[earRightId] = event.target.value;
             initNodes(earRightId);
             setElementText("earRight0Value", event.target.value);
@@ -542,7 +552,7 @@ window.onload = function init() {
 
     document
         .getElementById("legFrontLeft")
-        .addEventListener("input", function (event) {
+        .addEventListener("input", function(event) {
             theta[legFrontLeftId] = event.target.value;
             initNodes(legFrontLeftId);
             setElementText("legFrontLeftValue", event.target.value);
@@ -550,23 +560,23 @@ window.onload = function init() {
 
     document
         .getElementById("legFrontRight")
-        .addEventListener("input", function (event) {
+        .addEventListener("input", function(event) {
             theta[legFrontRightId] = event.target.value;
             initNodes(legFrontRightId);
             setElementText("legFrontRightValue", event.target.value);
         });
-    
+
     document
         .getElementById("legBackLeft")
-        .addEventListener("input", function (event) {
+        .addEventListener("input", function(event) {
             theta[legBackLeftId] = event.target.value;
             initNodes(legBackLeftId);
             setElementText("legBackLeftValue", event.target.value);
         });
-    
+
     document
         .getElementById("legBackRight")
-        .addEventListener("input", function (event) {
+        .addEventListener("input", function(event) {
             theta[legBackRightId] = event.target.value;
             initNodes(legBackRightId);
             setElementText("legBackRightValue", event.target.value);
@@ -574,7 +584,7 @@ window.onload = function init() {
 
     document
         .getElementById("tail0")
-        .addEventListener("input", function (event) {
+        .addEventListener("input", function(event) {
             theta[tailId] = event.target.value;
             initNodes(tailId);
             setElementText("tail0Value", event.target.value);
@@ -582,7 +592,7 @@ window.onload = function init() {
 
     document
         .getElementById("tail1")
-        .addEventListener("input", function (event) {
+        .addEventListener("input", function(event) {
             theta[tail1Id] = event.target.value;
             initNodes(tail1Id);
             setElementText("tail1Value", event.target.value);
@@ -592,26 +602,72 @@ window.onload = function init() {
 
     // TODO: Add event listeners for light, material properties and viewing/shading options
     // TODO: might or might not need to run render() if the slider does not affect the model
+    document
+        .getElementById("shininess")
+        .addEventListener("input", function(event) {
+            shininess = event.target.value;
+            setElementText("shininessValue", event.target.value);
+        });
 
+    document
+        .getElementById("ambient-material")
+        .addEventListener("input", function(event) {
+            uAmbientMaterial = hexToVec4(event.target.value);
+            ambientProduct = mult(uAmbientMaterial, uAmbientLight);
+        });
+
+    document
+        .getElementById("diffuse-material")
+        .addEventListener("input", function(event) {
+            uDiffuseMaterial = hexToVec4(event.target.value);
+            diffuseProduct = mult(uDiffuseMaterial, uDiffuseLight);
+        });
+
+    document
+        .getElementById("specular-material")
+        .addEventListener("input", function(event) {
+            uSpecularMaterial = hexToVec4(event.target.value);
+            specularProduct = mult(uSpecularMaterial, uSpecularLight);
+        });
+
+    document
+        .getElementById("ambient-coefficient")
+        .addEventListener("input", function(event) {
+            Ka = event.target.value;
+            setElementText("ambient-coefficient-value", event.target.value);
+        });
+
+    document
+        .getElementById("diffuse-coefficient")
+        .addEventListener("input", function(event) {
+            Kd = event.target.value;
+            setElementText("diffuse-coefficient-value", event.target.value);
+        });
+
+    document
+        .getElementById("specular-coefficient")
+        .addEventListener("input", function(event) {
+            Kd = event.target.value;
+            setElementText("specular-coefficient-value", event.target.value);
+        });
 
 
     render();
 };
 
-var render = function () {
+var render = function() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // TODO: Material color, properties and coefficient
 
-    
     // TODO: Light color, properties, position
     lightPosition = vec4(2.0, 2.0, 2.0, 0.0); // Default should be set globally at line ~75
 
 
     // TODO: Calculate the products of ambient, diffuse, specular, currently is set to default values
-    ambientProduct = vec4(0.2, 0.5, 0.5, 1.0);
-    diffuseProduct = vec4(1.0, 1.0, 1.0, 1.0);
-    specularProduct = vec4(0.5, 0.5, 0.5, 1.0);
+    ambientProduct = mult(uAmbientMaterial, uAmbientLight);
+    diffuseProduct = mult(uDiffuseMaterial, uDiffuseLight);
+    specularProduct = mult(uSpecularMaterial, uSpecularLight);
 
     // Set material properties
     gl.uniform4fv(
