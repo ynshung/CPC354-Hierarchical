@@ -53,14 +53,14 @@ var numNodes = 10;
 var angle = 0;
 
 var theta = [
-    230, 0, 0, 0, 0, 0, 0, 0, 0, 130, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 130, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ];
 
-var thetaCam = 0.0;
+var thetaCam = (130.0 * Math.PI) / 180.0;
 var phi = 0.0;
 var volume = 1.0;
-var near = -0.5;    // Near clipping plane
-var far = 5.0;     // Far clipping plane
+var near = 0.1;    // Near clipping plane
+var far = 3.0;     // Far clipping plane
 var radius = 20.0;
 var fovy = 45.0;    // Field-of-view in Y direction angle (in degrees)
 var aspect = 1.0;   // Viewport aspect ratio
@@ -621,30 +621,42 @@ window.onload = function init() {
         .getElementById("theta")
         .addEventListener("input", function (event){
             thetaCam = event.target.value * Math.PI/180.0;
+            setElementText("thetaValue", event.target.value);
         });
     
     document
         .getElementById("phi")
         .addEventListener("input", function (event){
             phi = event.target.value * Math.PI/180.0;
+            setElementText("phiValue", event.target.value);
         });
 
     document
         .getElementById("near")
         .addEventListener("input", function (event){
             near = event.target.value;
+            setElementText("nearValue", event.target.value);
         });
 
     document
         .getElementById("far")
         .addEventListener("input", function (event){
             far = event.target.value;
+            setElementText("farValue", event.target.value);
+        });
+
+    document
+        .getElementById("radius")
+        .addEventListener("input", function (event){
+            radius = event.target.value;
+            setElementText("radiusValue", event.target.value);
         });
 
     document
         .getElementById("fov")
         .addEventListener("input", function (event){
             fovy = event.target.value;
+            setElementText("fovValue", event.target.value);
         });
 
     document.getElementById("smooth-flat").onclick = function() {
@@ -652,10 +664,10 @@ window.onload = function init() {
         if (!flatShading) {
             // Smooth shading
             gl.uniform1i(gl.getUniformLocation(program, "flatShading"), flatShading);
-            document.getElementById("smooth-flat").innerHTML = "Flat Shading";
+            document.getElementById("smooth-flat").innerHTML = "Change to Flat Shading";
         } else {
             gl.uniform1i(gl.getUniformLocation(program, "flatShading"), flatShading);
-            document.getElementById("smooth-flat").innerHTML = "Smooth Shading";
+            document.getElementById("smooth-flat").innerHTML = "Change to Smooth Shading";
         }
     };
 
@@ -706,10 +718,13 @@ window.onload = function init() {
     document
         .getElementById("specular-coefficient")
         .addEventListener("input", function(event) {
-            Kd = event.target.value;
+            Ks = event.target.value;
             setElementText("specular-coefficient-value", event.target.value);
         });
 
+    setTimeout(function() {
+        near = document.getElementById("near").value;
+    }, 10);
 
     render();
 };
@@ -722,11 +737,15 @@ var render = function() {
     // TODO: Light color, properties, position
     lightPosition = vec4(2.0, 2.0, 2.0, 0.0); // Default should be set globally at line ~75
 
-
     // TODO: Calculate the products of ambient, diffuse, specular, currently is set to default values
     ambientProduct = mult(uAmbientMaterial, uAmbientLight);
     diffuseProduct = mult(uDiffuseMaterial, uDiffuseLight);
     specularProduct = mult(uSpecularMaterial, uSpecularLight);
+
+    // Coefficients
+    gl.uniform1f(gl.getUniformLocation(program, "Ka"), Ka);
+    gl.uniform1f(gl.getUniformLocation(program, "Kd"), Kd);
+    gl.uniform1f(gl.getUniformLocation(program, "Ks"), Ks);
 
     // Set material properties
     gl.uniform4fv(
@@ -750,18 +769,15 @@ var render = function() {
     );
 
     // Camera
-    eye = vec3(radius*Math.sin(thetaCam)*Math.cos(phi), 
-                radius*Math.sin(thetaCam)*Math.sin(phi), 
-                radius*Math.cos(thetaCam));
+    eye = vec3(
+        radius * Math.sin(thetaCam) * Math.cos(phi),
+        radius * Math.sin(thetaCam) * Math.sin(phi),
+        radius * Math.cos(thetaCam)
+    );
     modelViewMatrix = lookAt(eye, at, up);
     projectionMatrix = perspective(fovy, aspect, near, far);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
-
-    // Coefficients
-    gl.uniform1f(gl.getUniformLocation(program, "Ka"), Ka);
-    gl.uniform1f(gl.getUniformLocation(program, "Kd"), Kd);
-    gl.uniform1f(gl.getUniformLocation(program, "Ks"), Ks);
 
     traverse(bodyId);
     requestAnimFrame(render);
