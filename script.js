@@ -33,6 +33,8 @@ var vertexColors = [
     vec4(0.0, 1.0, 1.0, 1.0), // cyan
 ];
 
+var bgColor = vec4(0.95, 0.95, 0.95, 1.0);
+
 var bodyId = 0;
 var headId = 1;
 var earLeftId = 2;
@@ -81,24 +83,21 @@ var pointsArray = [];
 var colorsArray = [];
 var normalsArray = [];
 
-// TODO: Set default material / light / camera properties values below
-
 var uAmbientMaterial = vec4(50/255, 121/255 , 139/255, 1.0);
 var uDiffuseMaterial = vec4(110/255, 170/255 , 120/255, 1.0);
 var uSpecularMaterial = vec4(255/255, 255/255 , 255/255, 1.0);
 
-//change prettier colour
 var uAmbientLight = vec4(1.0, 1.0, 1.0, 1.0);
 var uDiffuseLight = vec4(1.0, 1.0, 1.0, 1.0);
 var uSpecularLight = vec4(1.0, 1.0, 1.0, 1.0);
 
 
-var shininess = 50.0; // TODO: Set a good looking default shininess
+var shininess = 50.0;
 var Ka = 1.0;
 var Kd = 1.0;
 var Ks = 1.0;
 
-var lightPosition; // TODO: Set default light position
+var lightPosition = vec4(-30.0, 10.0, -5.0, 0.0);
 
 var eye = vec3(1.0, 0.0, 0.0);    //Default camera location & orientation
 var at = vec3(0.0, 0.0, 0.0);
@@ -435,8 +434,7 @@ window.onload = function init() {
     }
 
     gl.viewport(0, 0, canvas.width, canvas.height);
-    // gl.clearColor(1.0, 1.0, 1.0, 1.0);
-    gl.clearColor(0.95, 0.95, 0.95, 1.0);
+    gl.clearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);
     gl.enable(gl.DEPTH_TEST);
     //
     //  Load shaders and initialize attribute buffers
@@ -671,8 +669,6 @@ window.onload = function init() {
         }
     };
 
-    // TODO: Add event listeners for light, material properties and viewing/shading options
-    // TODO: might or might not need to run render() if the slider does not affect the model
     document
         .getElementById("shininess")
         .addEventListener("input", function(event) {
@@ -722,6 +718,55 @@ window.onload = function init() {
             setElementText("specular-coefficient-value", event.target.value);
         });
 
+    document
+        .getElementById("ambient-light")
+        .addEventListener("input", function(event) {
+            uAmbientLight = hexToVec4(event.target.value);
+            ambientProduct = mult(uAmbientMaterial, uAmbientLight);
+        });
+
+    document
+        .getElementById("diffuse-light")
+        .addEventListener("input", function(event) {
+            uDiffuseLight = hexToVec4(event.target.value);
+            diffuseProduct = mult(uDiffuseMaterial, uDiffuseLight);
+        });
+    
+    document
+        .getElementById("specular-light")
+        .addEventListener("input", function(event) {
+            uSpecularLight = hexToVec4(event.target.value);
+            specularProduct = mult(uSpecularMaterial, uSpecularLight);
+        });
+    
+    document
+        .getElementById("x-light-pos")
+        .addEventListener("input", function (event) {
+            lightPosition[0] = event.target.value;
+            setElementText("x-light-pos-value", event.target.value);
+        });
+    
+    document
+        .getElementById("y-light-pos")
+        .addEventListener("input", function (event) {
+            lightPosition[1] = event.target.value;
+            setElementText("y-light-pos-value", event.target.value);
+        });
+    
+    document
+        .getElementById("z-light-pos")
+        .addEventListener("input", function (event) {
+            lightPosition[2] = event.target.value;
+            setElementText("z-light-pos-value", event.target.value);
+        });
+
+    document
+        .getElementById("bgColor")
+        .addEventListener("input", function (event) {
+            bgColor = hexToVec4(event.target.value);
+            gl.clearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);
+        });
+
     setTimeout(function() {
         near = document.getElementById("near").value;
     }, 10);
@@ -732,12 +777,6 @@ window.onload = function init() {
 var render = function() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    // TODO: Material color, properties and coefficient
-
-    // TODO: Light color, properties, position
-    lightPosition = vec4(2.0, 2.0, 2.0, 0.0); // Default should be set globally at line ~75
-
-    // TODO: Calculate the products of ambient, diffuse, specular, currently is set to default values
     ambientProduct = mult(uAmbientMaterial, uAmbientLight);
     diffuseProduct = mult(uDiffuseMaterial, uDiffuseLight);
     specularProduct = mult(uSpecularMaterial, uSpecularLight);

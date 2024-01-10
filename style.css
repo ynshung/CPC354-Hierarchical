@@ -6,12 +6,23 @@ canvas {
     border-radius: 8px;
 }
 
+.color-picker {
+    min-width: 64px;
+}
+
 .color-container {
     width: 42px;
     height: 42px;
     border-radius: 100%;
     overflow: hidden;
     border: 1px solid #ccc;
+    margin: auto;
+}
+
+.color-picker label {
+    margin: auto;
+    text-align: center;
+    width: 100%;
 }
 
 input[type="color"] {
