@@ -6,66 +6,66 @@
         <title>3D Hierarchical Model</title>
 
         <script id="vertex-shader" type="x-shader/x-vertex">
-        attribute  vec4 vPosition;
-        attribute  vec3 vNormal;
-        attribute  vec4 vColor;
-        varying vec4 fColor;
-        varying vec4 vClr;
+            attribute  vec4 vPosition;
+            attribute  vec3 vNormal;
+            attribute  vec4 vColor;
+            varying vec4 fColor;
+            varying vec4 vClr;
 
-        uniform vec4 ambientProduct, diffuseProduct, specularProduct;
-        uniform vec4 lightPosition;
-        uniform float shininess;
-        uniform float Ka, Kd, Ks;
+            uniform vec4 ambientProduct, diffuseProduct, specularProduct;
+            uniform vec4 lightPosition;
+            uniform float shininess;
+            uniform float Ka, Kd, Ks;
 
-        uniform mat4 modelViewMatrix;
-        uniform mat4 projectionMatrix;
-        uniform bool flatShading;
+            uniform mat4 modelViewMatrix;
+            uniform mat4 projectionMatrix;
+            uniform bool flatShading;
 
-        void main() 
-        {
-            // Adapted from angelChap6/shadedCube.html
+            void main()
+            {
+                // Adapted from angelChap6/shadedCube.html
 
-            vec3 pos = vec3(modelViewMatrix * vPosition);
-            vec3 L = normalize(lightPosition.xyz - pos);
-            vec3 E = normalize(-pos);
-            vec3 H = normalize(L + E);
-            vec3 N = normalize(vec3(modelViewMatrix * vec4(vNormal, 0.0)));
+                vec3 pos = vec3(modelViewMatrix * vPosition);
+                vec3 L = normalize(lightPosition.xyz - pos);
+                vec3 E = normalize(-pos);
+                vec3 H = normalize(L + E);
+                vec3 N = normalize(vec3(modelViewMatrix * vec4(vNormal, 0.0)));
 
-            vec4 ambient = ambientProduct;
-            vec4 diffuse = max(dot(L, N), 0.0) * diffuseProduct;
-            vec4 specular = pow(max(dot(N, H), 0.0), shininess) * specularProduct;
+                vec4 ambient = ambientProduct;
+                vec4 diffuse = max(dot(L, N), 0.0) * diffuseProduct;
+                vec4 specular = pow(max(dot(N, H), 0.0), shininess) * specularProduct;
 
-            if( dot(L, N) < 0.0 ) {
-                specular = vec4(0.0, 0.0, 0.0, 1.0);
+                if( dot(L, N) < 0.0 ) {
+                    specular = vec4(0.0, 0.0, 0.0, 1.0);
+                }
+
+                fColor = Ka * ambient + Kd * diffuse + Ks * specular;
+                // fColor = vColor;
+
+                if (flatShading){
+                    fColor = vColor;
+                    vClr = fColor;
+                }
+                gl_Position = projectionMatrix * modelViewMatrix * vPosition;
             }
-
-            fColor = Ka * ambient + Kd * diffuse + Ks * specular;
-            // fColor = vColor;
-            
-            if (flatShading){
-                fColor = vColor;
-                vClr = fColor;
-            }
-            gl_Position = projectionMatrix * modelViewMatrix * vPosition;
-        } 
         </script>
 
         <script id="fragment-shader" type="x-shader/x-fragment">
 
-        precision mediump float;
+            precision mediump float;
 
-        varying  vec4 fColor;
-        varying vec4 vClr;
-        uniform bool flatShading;
+            varying  vec4 fColor;
+            varying vec4 vClr;
+            uniform bool flatShading;
 
-        void main() 
-        { 
-            if (flatShading){
-                gl_FragColor = vClr;
-            } else {
-                gl_FragColor = fColor;
+            void main()
+            {
+                if (flatShading){
+                    gl_FragColor = vClr;
+                } else {
+                    gl_FragColor = fColor;
+                }
             }
-        } 
         </script>
 
         <link rel="stylesheet" href="style.css" />
@@ -95,8 +95,10 @@
             </div>
 
             <div class="attr-container">
-                <span class="text-decoration-underline fw-bold">Hierarchical Object</span>
-                <br/>
+                <span class="text-decoration-underline fw-bold"
+                    >Hierarchical Object</span
+                >
+                <br />
                 <span>Body:</span>
 
                 <div>
@@ -152,7 +154,7 @@
                     </div>
                 </div>
 
-                <br/>
+                <br />
 
                 <span>Head:</span>
 
@@ -260,7 +262,7 @@
                     </div>
                 </div>
 
-                <br/>
+                <br />
 
                 <span>Legs:</span>
 
@@ -279,9 +281,11 @@
                             step="1"
                             value="0"
                         />
-                        <span class="slider-label" id="legFrontLeftValue">0</span>
+                        <span class="slider-label" id="legFrontLeftValue"
+                            >0</span
+                        >
                     </div>
-                    
+
                     <div class="d-flex gap-3">
                         <label class="fs-7 opacity-75 text-nowrap w-label-xl"
                             >Front Right:</label
@@ -296,9 +300,11 @@
                             step="1"
                             value="0"
                         />
-                        <span class="slider-label" id="legFrontRightValue">0</span>
+                        <span class="slider-label" id="legFrontRightValue"
+                            >0</span
+                        >
                     </div>
-                    
+
                     <div class="d-flex gap-3">
                         <label class="fs-7 opacity-75 text-nowrap w-label-xl"
                             >Back Left:</label
@@ -313,9 +319,11 @@
                             step="1"
                             value="0"
                         />
-                        <span class="slider-label" id="legBackLeftValue">0</span>
+                        <span class="slider-label" id="legBackLeftValue"
+                            >0</span
+                        >
                     </div>
-                    
+
                     <div class="d-flex gap-3">
                         <label class="fs-7 opacity-75 text-nowrap w-label-xl"
                             >Back Right:</label
@@ -330,7 +338,9 @@
                             step="1"
                             value="0"
                         />
-                        <span class="slider-label" id="legBackRightValue">0</span>
+                        <span class="slider-label" id="legBackRightValue"
+                            >0</span
+                        >
                     </div>
                 </div>
 
@@ -376,7 +386,9 @@
 
                 <hr />
 
-                <div class="mb-1 fw-bold text-decoration-underline">Camera Properties</div>
+                <div class="mb-1 fw-bold text-decoration-underline">
+                    Camera Properties
+                </div>
 
                 <div>
                     <div class="d-flex gap-3">
@@ -412,7 +424,7 @@
                         />
                         <span class="slider-label" id="phiValue">0</span>
                     </div>
-                    
+
                     <div class="d-flex gap-3">
                         <label class="fs-7 opacity-75 text-nowrap w-label"
                             >Radius:</label
@@ -429,7 +441,7 @@
                         />
                         <span class="slider-label" id="radiusValue">20</span>
                     </div>
-                    
+
                     <div class="d-flex gap-3">
                         <label class="fs-7 opacity-75 text-nowrap w-label"
                             >FOV:</label
@@ -481,15 +493,14 @@
                         <span class="slider-label" id="farValue">3</span>
                     </div>
                 </div>
-                <hr/>
+                <hr />
             </div>
 
             <div class="attr-container">
                 <span class="fw-bold text-decoration-underline">Material</span>
                 <div class="slidecontainer" id="slidecontainer_1">
                     <label for="shininess"
-                        >Shininesss:
-                        <span id="shininessValue">50</span></label
+                        >Shininesss: <span id="shininessValue">50</span></label
                     >
                     <input
                         class="form-range"
@@ -507,7 +518,11 @@
                 <div class="mb-3 d-flex gap-1 justify-content-center">
                     <div class="color-picker">
                         <div class="color-container">
-                            <input type="color" id="ambient-material" value="#32798B" />
+                            <input
+                                type="color"
+                                id="ambient-material"
+                                value="#32798B"
+                            />
                         </div>
                         <label class="fs-7 opacity-75" for="ambient-material"
                             >Ambient</label
@@ -516,7 +531,11 @@
 
                     <div class="color-picker">
                         <div class="color-container">
-                            <input type="color" id="diffuse-material" value="#6EAA78" />
+                            <input
+                                type="color"
+                                id="diffuse-material"
+                                value="#6EAA78"
+                            />
                         </div>
                         <label class="fs-7 opacity-75" for="diffuse-material"
                             >Diffuse</label
@@ -525,7 +544,11 @@
 
                     <div class="color-picker">
                         <div class="color-container">
-                            <input type="color" id="specular-material" value="#FFFFFF" />
+                            <input
+                                type="color"
+                                id="specular-material"
+                                value="#FFFFFF"
+                            />
                         </div>
                         <label class="fs-7 opacity-75" for="specular-material"
                             >Specular</label
@@ -533,7 +556,7 @@
                     </div>
                 </div>
 
-                <span>Material Coefficient:</span>
+                <span>Reflection Coefficient:</span>
 
                 <div>
                     <div class="d-flex gap-3">
@@ -550,7 +573,11 @@
                             step="0.01"
                             value="1"
                         />
-                        <span class="slider-label" id="ambient-coefficient-value">1</span>
+                        <span
+                            class="slider-label"
+                            id="ambient-coefficient-value"
+                            >1</span
+                        >
                     </div>
 
                     <div class="d-flex gap-3">
@@ -561,13 +588,17 @@
                             class="form-range"
                             name="diffuse-coefficient"
                             type="range"
-                            id="diffuse-coefficient"    
+                            id="diffuse-coefficient"
                             min="0"
                             max="1"
                             step="0.01"
                             value="1"
                         />
-                        <span class="slider-label" id="diffuse-coefficient-value">1</span>
+                        <span
+                            class="slider-label"
+                            id="diffuse-coefficient-value"
+                            >1</span
+                        >
                     </div>
 
                     <div class="d-flex gap-3">
@@ -578,13 +609,17 @@
                             class="form-range"
                             name="specular-coefficient"
                             type="range"
-                            id="specular-coefficient"    
+                            id="specular-coefficient"
                             min="0"
                             max="1"
                             step="0.01"
                             value="1"
                         />
-                        <span class="slider-label" id="specular-coefficient-value">1</span>
+                        <span
+                            class="slider-label"
+                            id="specular-coefficient-value"
+                            >1</span
+                        >
                     </div>
                 </div>
 
@@ -596,7 +631,11 @@
                 <div class="mb-3 d-flex gap-1 justify-content-center">
                     <div class="color-picker">
                         <div class="color-container">
-                            <input type="color" id="ambient-light" value="#FFFFFF" />
+                            <input
+                                type="color"
+                                id="ambient-light"
+                                value="#FFFFFF"
+                            />
                         </div>
                         <label class="fs-7 opacity-75" for="ambient-light"
                             >Ambient</label
@@ -605,7 +644,11 @@
 
                     <div class="color-picker">
                         <div class="color-container">
-                            <input type="color" id="diffuse-light" value="#FFFFFF" />
+                            <input
+                                type="color"
+                                id="diffuse-light"
+                                value="#FFFFFF"
+                            />
                         </div>
                         <label class="fs-7 opacity-75" for="diffuse-light"
                             >Diffuse</label
@@ -614,7 +657,11 @@
 
                     <div class="color-picker">
                         <div class="color-container">
-                            <input type="color" id="specular-light" value="#FFFFFF" />
+                            <input
+                                type="color"
+                                id="specular-light"
+                                value="#FFFFFF"
+                            />
                         </div>
                         <label class="fs-7 opacity-75" for="specular-light"
                             >Specular</label
@@ -639,7 +686,9 @@
                             step="0.5"
                             value="-30"
                         />
-                        <span class="slider-label" id="x-light-pos-value">-30</span>
+                        <span class="slider-label" id="x-light-pos-value"
+                            >-30</span
+                        >
                     </div>
 
                     <div class="d-flex gap-3">
@@ -650,13 +699,15 @@
                             class="form-range"
                             name="y-light-pos"
                             type="range"
-                            id="y-light-pos"    
+                            id="y-light-pos"
                             min="-50"
                             max="50"
                             step="0.5"
                             value="10"
                         />
-                        <span class="slider-label" id="y-light-pos-value">10</span>
+                        <span class="slider-label" id="y-light-pos-value"
+                            >10</span
+                        >
                     </div>
 
                     <div class="d-flex gap-3">
@@ -667,16 +718,21 @@
                             class="form-range"
                             name="z-light-pos"
                             type="range"
-                            id="z-light-pos"    
+                            id="z-light-pos"
                             min="-40"
                             max="40"
                             step="0.5"
                             value="-5"
                         />
-                        <span class="slider-label" id="z-light-pos-value">-5</span>
+                        <span class="slider-label" id="z-light-pos-value"
+                            >-5</span
+                        >
                     </div>
 
-                    <div class="item btn-container text-center mt-3" id="button">
+                    <div
+                        class="item btn-container text-center mt-3"
+                        id="button"
+                    >
                         <button
                             class="btn btn-primary btn-sm me-1"
                             id="point-directional"
@@ -710,7 +766,7 @@
                     </button>
                 </div>
 
-                <hr/>
+                <hr />
             </div>
         </div>
         <script
