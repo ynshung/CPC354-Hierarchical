@@ -108,6 +108,8 @@ var specularProduct;
 
 var flatShading = false; // Default smooth shading
 
+var directional = false; // Default point light
+
 //-------------------------------------------
 
 function scale4(a, b, c) {
@@ -765,6 +767,20 @@ window.onload = function init() {
             bgColor = hexToVec4(event.target.value);
             gl.clearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);
         });
+    
+    document.getElementById("point-directional").onclick = function () {
+        directional = !directional;
+    
+        // Update the shader uniform
+        var directionalLocation = gl.getUniformLocation(program, "uIsDirectionalLight");
+        gl.uniform1i(directionalLocation, directional);
+    
+        if (directional) {
+            document.getElementById("point-directional").innerHTML = "Change to Point Light";
+        } else {
+            document.getElementById("point-directional").innerHTML = "Change to Directional Light";
+        }
+    };
 
     setTimeout(function () {
         near = document.getElementById("near").value;
