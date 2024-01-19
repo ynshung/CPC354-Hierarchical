@@ -16,6 +16,7 @@
             uniform vec4 lightPosition;
             uniform float shininess;
             uniform float Ka, Kd, Ks;
+            uniform float uSpotlightCutoff;
 
             uniform mat4 modelViewMatrix;
             uniform mat4 projectionMatrix;
@@ -48,9 +49,22 @@
                 vec3 vertexToLightDir = normalize(lightPosition.xyz - pos);
                 float spotEffect = dot(vertexToLightDir, spotlightDirection);
 
+                // Define your spotlight direction (adjust as necessary)
+                vec3 spotlightDirection = normalize(vec3(0.0, 0.0, -1.0)); // Add the correct spotlight direction here
+
+                // Calculate if vertex is within the spotlight
+                vec3 vertexToLightDir = normalize(lightPosition.xyz - pos);
+                float spotEffect = dot(vertexToLightDir, spotlightDirection);
+
                 vec4 ambient = ambientProduct;
                 vec4 diffuse = max(dot(L, N), 0.0) * diffuseProduct;
                 vec4 specular = pow(max(dot(N, H), 0.0), shininess) * specularProduct;
+
+                if (dot(L, N) < 0.0 || spotEffect < cos(radians(uSpotlightCutoff))) {
+                    // Vertex is outside the spotlight or not facing the light source
+                    specular = vec4(0.0, 0.0, 0.0, 1.0);
+                    diffuse = vec4(0.0, 0.0, 0.0, 1.0); // Optionally set diffuse to zero outside spotlight
+                }
 
                 fColor = Ka * ambient + Kd * diffuse + Ks * specular;
 
@@ -71,6 +85,7 @@
             varying vec4 fColor;
             varying vec4 vClr;
             uniform bool flatShading;
+            uniform float uSpotlightCutoff;
 
             void main()
             {
@@ -114,6 +129,13 @@
                 >
                 <br />
                 <span>Body:</span>
+                
+                <div class="mb-1 fw-bold text-decoration-underline">Spotlight Control</div>
+                <div>
+                    <label for="spotlightCutoff">Spotlight Cutoff Angle:</label>
+                    <input type="range" id="spotlightCutoff" min="0" max="90" value="45" onchange="updateSpotlightCutoffValue(this.value)">
+                </div>
+              
                 <div>
                     <div class="d-flex gap-3">
                         <label class="fs-7 opacity-75 text-nowrap w-label"

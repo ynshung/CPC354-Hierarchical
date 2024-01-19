@@ -108,6 +108,7 @@ var specularProduct;
 
 var flatShading = false; // Default smooth shading
 
+var spotlightCutoff = 45.0; // Initial cutoff angle in degrees
 var directional = false; // Default point light
 
 //-------------------------------------------
@@ -430,6 +431,16 @@ function hexToVec4(hex, intensity = 1.0) {
     const g = parseInt(hex.substr(3, 2), 16);
     const b = parseInt(hex.substr(5, 2), 16);
     return vec4(r / 255, g / 255, b / 255, 1.0);
+}
+
+function updateSpotlightCutoff() {
+    var cutoffUniformLoc = gl.getUniformLocation(program, "uSpotlightCutoff");
+    gl.uniform1f(cutoffUniformLoc, spotlightCutoff);
+}
+
+function updateSpotlightCutoffValue(value) {
+    spotlightCutoff = parseFloat(value); // Ensure the value is a float
+    updateSpotlightCutoff(); // Update the shader with the new value
 }
 
 window.onload = function init() {
