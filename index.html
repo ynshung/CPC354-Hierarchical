@@ -22,15 +22,32 @@
             uniform mat4 projectionMatrix;
             uniform bool flatShading;
             
+            uniform bool uIsDirectionalLight;
 
             void main()
             {
                 // Adapted from angelChap6/shadedCube.html
                 vec3 pos = vec3(modelViewMatrix * vPosition);
                 vec3 L = normalize(lightPosition.xyz - pos);
+
+                if (uIsDirectionalLight) {
+                    // For directional light, the light direction is constant for all vertices
+                    L = normalize(-lightPosition.xyz); // Assuming lightPosition holds the light direction
+                } else {
+                    // For point light, the light direction varies per vertex
+                    L = normalize(lightPosition.xyz - pos);
+                }
+
                 vec3 E = normalize(-pos);
                 vec3 H = normalize(L + E);
                 vec3 N = normalize(vec3(modelViewMatrix * vec4(vNormal, 0.0)));
+                
+                // Define your spotlight direction (adjust as necessary)
+                vec3 spotlightDirection = normalize(vec3(0.0, 0.0, -1.0)); // Add the correct spotlight direction here
+                
+                // Calculate if vertex is within the spotlight
+                vec3 vertexToLightDir = normalize(lightPosition.xyz - pos);
+                float spotEffect = dot(vertexToLightDir, spotlightDirection);
 
                 // Define your spotlight direction (adjust as necessary)
                 vec3 spotlightDirection = normalize(vec3(0.0, 0.0, -1.0)); // Add the correct spotlight direction here
@@ -65,7 +82,7 @@
 
             precision mediump float;
 
-            varying  vec4 fColor;
+            varying vec4 fColor;
             varying vec4 vClr;
             uniform bool flatShading;
             uniform float uSpotlightCutoff;
@@ -118,7 +135,7 @@
                     <label for="spotlightCutoff">Spotlight Cutoff Angle:</label>
                     <input type="range" id="spotlightCutoff" min="0" max="90" value="45" onchange="updateSpotlightCutoffValue(this.value)">
                 </div>
-                
+              
                 <div>
                     <div class="d-flex gap-3">
                         <label class="fs-7 opacity-75 text-nowrap w-label"
