@@ -25,7 +25,7 @@
 
             void main()
             {
-                // Existing code
+                // Adapted from angelChap6/shadedCube.html
                 vec3 pos = vec3(modelViewMatrix * vPosition);
                 vec3 L = normalize(lightPosition.xyz - pos);
                 vec3 E = normalize(-pos);
